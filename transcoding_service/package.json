@@ -1,0 +1,19 @@
+{
+	"name": "transcoding_service",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node src/index.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@ffmpeg-installer/ffmpeg": "^1.1.0",
+		"@ffmpeg-installer/linux-x64": "^4.1.0",
+		"amqplib": "^0.10.3",
+		"fluent-ffmpeg": "^2.1.2"
+	}
+}

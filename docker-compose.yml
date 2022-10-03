@@ -1,0 +1,81 @@
+version: '3.9'
+networks:
+    video_decryption_streaming_network:
+        driver: bridge
+volumes:
+    decrypted:
+        driver: local
+
+services:
+    rabbitmq:
+        build:
+            context: ./rabbitmq
+            dockerfile: Dockerfile
+        container_name: rabbitmq
+        ports:
+            - 5672:5672
+            - 15672:15672
+        networks:
+            - video_decryption_streaming_network
+    nginx:
+        build:
+            context: ./nginx
+            dockerfile: Dockerfile
+        container_name: nginx
+        ports:
+            - 8080:80
+        volumes:
+            - ./data/decrypted:/video/composition
+        networks:
+            - video_decryption_streaming_network
+    api_service:
+        build: ./api_service
+        container_name: api_service
+        command: npm start
+        volumes:
+            - ./api_service:/usr/app
+        environment:
+            PORT: 3000
+            AMQP_URL: amqp://guest:guest@rabbitmq:5672
+            TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+            TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+        ports:
+            - 3000:3000
+        networks:
+            - video_decryption_streaming_network
+    decryption_service:
+        build: ./decryption_service
+        container_name: decryption_service
+        command: npm start
+        volumes:
+            - ./decryption_service:/usr/app
+            - ./data/decrypted:/usr/app/decrypted
+            - ./keys:/usr/app/keys:ro
+        environment:
+            AMQP_URL: amqp://guest:guest@rabbitmq:5672
+            TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+            TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+        networks:
+            - video_decryption_streaming_network
+    transcoding_service:
+        build: ./transcoding_service
+        container_name: transcoding_service
+        command: npm start
+        volumes:
+            - ./transcoding_service:/usr/app
+            - ./data/decrypted:/usr/app/decrypted
+        environment:
+            AMQP_URL: amqp://guest:guest@rabbitmq:5672
+        networks:
+            - video_decryption_streaming_network
+    cleanup_service:
+        build: ./cleanup_service
+        container_name: cleanup_service
+        command: npm start
+        volumes:
+            - ./cleanup_service:/usr/app
+            - ./data/decrypted:/usr/app/decrypted
+        environment:
+            AMQP_URL: amqp://guest:guest@rabbitmq:5672
+        networks:
+            - video_decryption_streaming_network

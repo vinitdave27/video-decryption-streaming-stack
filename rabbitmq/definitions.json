@@ -1,0 +1,58 @@
+{
+	"bindings": [],
+	"exchanges": [],
+	"global_parameters": [],
+	"parameters": [],
+	"permissions": [
+		{ "configure": ".*", "read": ".*", "user": "guest", "vhost": "/", "write": ".*" },
+		{ "configure": ".*", "read": ".*", "user": "myuser", "vhost": "/", "write": ".*" }
+	],
+	"policies": [],
+	"queues": [
+		{
+			"arguments": {},
+			"auto_delete": false,
+			"durable": true,
+			"name": "transcodingQueue",
+			"type": "classic",
+			"vhost": "/"
+		},
+		{
+			"arguments": {},
+			"auto_delete": false,
+			"durable": true,
+			"name": "decryptionQueue",
+			"type": "classic",
+			"vhost": "/"
+		},
+		{
+			"arguments": {},
+			"auto_delete": false,
+			"durable": true,
+			"name": "deleteDecryptedQueue",
+			"type": "classic",
+			"vhost": "/"
+		},
+		{ "arguments": {}, "auto_delete": false, "durable": true, "name": "jobs", "type": "classic", "vhost": "/" }
+	],
+	"rabbit_version": "3.11.0",
+	"rabbitmq_version": "3.11.0",
+	"topic_permissions": [],
+	"users": [
+		{
+			"hashing_algorithm": "rabbit_password_hashing_sha256",
+			"limits": {},
+			"name": "guest",
+			"password_hash": "ncLkTptpTKUyDgMFKqAA498LzeCdUwdWjPSkBLbCvTajkwun",
+			"tags": []
+		},
+		{
+			"hashing_algorithm": "rabbit_password_hashing_sha256",
+			"limits": {},
+			"name": "myuser",
+			"password_hash": "EV89Md3gldH3Cbo8Wq1bNY/dHAz4uXloUaj1uLCfpveb8Oge",
+			"tags": ["administrator"]
+		}
+	],
+	"vhosts": [{ "limits": [], "metadata": { "description": "Default virtual host", "tags": [] }, "name": "/" }]
+}
