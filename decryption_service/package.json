@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "node src/index.js"
+		"start": "nodemon src/index.js"
 	},
 	"keywords": [],
 	"author": "",
@@ -13,6 +13,7 @@
 	"dependencies": {
 		"amqplib": "^0.10.3",
 		"axios": "^0.27.2",
+		"nodemon": "^2.0.20",
 		"twilio": "^3.82.1"
 	}
 }

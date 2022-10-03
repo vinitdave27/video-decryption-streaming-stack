@@ -1,12 +1,11 @@
 const amqp = require('amqplib');
 const apiv1 = require('express').Router();
-const { initializeTwilioClient, initializeDBClient } = require('../utility');
+const { initializeTwilioClient } = require('../utility');
 
 apiv1.post('/create', async (req, res) => {
 	const { roomSid } = req.body;
 	console.log(`\nCreating Composition for ${roomSid}`);
 	const client = initializeTwilioClient();
-	const supabase = initializeDBClient();
 
 	const composition = await client.video.v1.compositions.create({
 		audioSources: ['*'],
@@ -19,23 +18,6 @@ apiv1.post('/create', async (req, res) => {
 		roomSid: roomSid,
 		statusCallback: 'https://composition-callback-fn-4192-dev.twil.io/composition/status-callback',
 		statusCallbackMethod: 'POST',
-	});
-
-	const { data, error } = await supabase.from('compositions').insert({
-		roomSid: composition.roomSid,
-		compositionSid: composition.sid,
-		status: composition.status,
-		dateCreated: composition.dateCreated || '',
-		dateCompleted: composition.dateCompleted || '',
-		dateDeleted: composition.dateDeleted || '',
-		format: composition.format,
-		resolution: composition.resolution,
-		decrypted: false,
-		dateDecrypted: '',
-		transcoded: false,
-		dateTranscoded: '',
-		expired: false,
-		dateExpired: '',
 	});
 
 	res.json({ compositionSid: composition.sid, status: composition.status });
