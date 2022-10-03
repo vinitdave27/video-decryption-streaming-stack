@@ -58,6 +58,7 @@ function startWorker() {
 async function work(msg, cb) {
 	const { compositionSid } = JSON.parse(msg.content);
 	await fs.rm(`./decrypted/${compositionSid}.mp4`, { force: true, maxRetries: 3, retryDelay: 5000 });
+	console.log(`Cleaning up after transcoding of ${compositionSid}`);
 	cb(true);
 }
 

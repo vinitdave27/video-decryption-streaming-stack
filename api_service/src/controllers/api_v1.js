@@ -4,7 +4,7 @@ const { initializeTwilioClient } = require('../utility');
 
 apiv1.post('/create', async (req, res) => {
 	const { roomSid } = req.body;
-	console.log(`\nCreating Composition for ${roomSid}`);
+	console.log(`Creating Composition for ${roomSid}`);
 	const client = initializeTwilioClient();
 
 	const composition = await client.video.v1.compositions.create({

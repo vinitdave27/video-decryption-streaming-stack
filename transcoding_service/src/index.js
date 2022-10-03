@@ -75,7 +75,7 @@ function startWorker() {
 
 async function work(msg, cb) {
 	const { compositionSid } = JSON.parse(msg.content);
-	console.log(`\nTranscoding started for ${compositionSid}`);
+	console.log(`Transcoding started for ${compositionSid}`);
 
 	if (!existsSync(`./decrypted/${compositionSid}`)) await fs.mkdir(`./decrypted/${compositionSid}`);
 
@@ -100,7 +100,7 @@ async function work(msg, cb) {
 			console.error(error.message);
 		})
 		.on('end', () => {
-			console.log(`\nTranscoding complete for composition ${compositionSid}`);
+			console.log(`Transcoding complete for composition ${compositionSid}`);
 			publish(msg);
 			cb(true);
 		})

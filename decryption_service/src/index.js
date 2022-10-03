@@ -71,29 +71,30 @@ function startWorker() {
 }
 
 async function work(msg, cb) {
-	console.log('Downloading and Decryption of ', msg.content.toString());
 	const { compositionSid } = JSON.parse(msg.content.toString());
+	console.log(`Downloading and Decrypting ${compositionSid}`);
 	const client = initializeTwilioClient();
-	console.log(`\nInitialized Twilio Client`);
+	console.log(`Initialized Twilio Client`);
 	const mediaUrlResponse = await fetchMediaUrl(client, compositionSid);
-	console.log(`\nFetched Media Url from Composition API`);
+	console.log(`Fetched Media Url from Composition API`);
 	const { headers, data } = await fetchMedia(mediaUrlResponse.body.redirect_to);
-	console.log(`\nFetched Encrypted Media and Headers from AWS S3 Presigned Url`);
+	console.log(`Fetched Encrypted Media and Headers from AWS S3 Presigned Url`);
 	let encryptedCek = headers['x-amz-meta-x-amz-key'];
 	let iv = headers['x-amz-meta-x-amz-iv'];
 
 	const privateKey = fs.readFileSync(`./keys/id_rsa_priv.pem`, 'utf-8');
 	const decipher = decryptMedia(privateKey, encryptedCek, iv);
-	console.log(`\nDecrypted Content Encryption Key`);
+	console.log(`Decrypted Content Encryption Key`);
 	const output = fs.createWriteStream(`./decrypted/${compositionSid}.mp4`);
+	console.log(`Decrypting Content for HLS transcoding`);
 	data.pipe(decipher).pipe(output);
 
 	output.on('finish', () => {
-		console.log('\nOutput WriteStream has finished.');
+		console.log('Output WriteStream has finished.');
 	});
 
 	output.on('close', () => {
-		console.log('\nOutput WriteStream has closed.');
+		console.log('Output WriteStream has closed.');
 		publish(msg);
 		cb(true);
 	});
